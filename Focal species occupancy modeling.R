@@ -3,6 +3,8 @@
 
 library(unmarked)
 
+getwd()
+
 # SoCal riparian ####
 {
   ## read in the data ####
@@ -51,10 +53,9 @@ library(unmarked)
   
   if(sum(habitat$Site_ID==lbvi.max$Site_ID)==dim(habitat)[1]){
     print('Habitat and lbvi site IDs all match')
-  } 
-  else {
+  } else {
     print('WARNING: "habitat" and "LBVI" site IDs do NOT match')
-  }
+    }
   
   lbvi.val <- read.csv('Data_SoCal/20251021_LBVI_sites.csv') # manually confirmed locations
   lbvi.val=lbvi.val[order(lbvi.val$Site_ID),]
@@ -364,8 +365,8 @@ library(unmarked)
   
   # check alignment, trim dataframes
   {
-    habitat$site==bobo_binary$site
-    bobo_binary$site==sosp_binary$site
+    habitat$site==grsp_binary$site
+    grsp_binary$site==grsp_binary$site
     # all sites aligned
     
     rownames(habitat) <- habitat$site
@@ -392,21 +393,9 @@ library(unmarked)
   # build effort covariate and encounter histories
   for(a in 1:length(all.arus)){
     for(s in 1:sample.intervals){
-      eff[a,s]=sum(!is.na(bobo_binary[a, sampling.start[s]:sampling.stop[s]]))
+      eff[a,s]=sum(!is.na(grsp_binary[a, sampling.start[s]:sampling.stop[s]]))
       survey.time[a,s]=s
       if(eff[a,s]>0){
-        # BOBO
-        if( max(bobo_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1){
-          dets.bobo[a,s]=1
-        } else {
-          dets.bobo[a,s]=0
-        }
-        # SOSP
-        if( max(sosp_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1) {
-          dets.sosp[a,s]=1
-        } else {
-          dets.sosp[a,s]=0
-        }
         # GRSP
         if( max(grsp_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1) {
           dets.grsp[a,s]=1
@@ -419,13 +408,7 @@ library(unmarked)
         } else {
           dets.hola[a,s]=0
         }
-        # RWBL
-        if( max(rwbl_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1) {
-          dets.rwbl[a,s]=1
-        } else {
-          dets.rwbl[a,s]=0
-        }
-        
+
       }
     }
   }
