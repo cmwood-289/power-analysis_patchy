@@ -3,11 +3,9 @@
 
 library(unmarked)
 
-getwd()
-
-# SoCal riparian ####
+# SoCal riparian ----
 {
-  ## read in the data ####
+  ## read in the data ----
   effort <- read.csv('Data_SoCal/20251003_effort_file_all_SoCal_streams_sites.csv')
   effort=effort[order(effort$Site_ID),]
   
@@ -21,8 +19,8 @@ getwd()
   sum(habitat$HabType)/dim(habitat)[1]
   sum(habitat$LowRip)/dim(habitat)[1]
   str(habitat)
-
-
+  
+  
   if(sum(habitat$Site_ID==effort$Site_ID)==dim(habitat)[1]){
     print('Habitat and effort site IDs all match')
   } else {
@@ -53,9 +51,10 @@ getwd()
   
   if(sum(habitat$Site_ID==lbvi.max$Site_ID)==dim(habitat)[1]){
     print('Habitat and lbvi site IDs all match')
-  } else {
+  } 
+  else {
     print('WARNING: "habitat" and "LBVI" site IDs do NOT match')
-    }
+  }
   
   lbvi.val <- read.csv('Data_SoCal/20251021_LBVI_sites.csv') # manually confirmed locations
   lbvi.val=lbvi.val[order(lbvi.val$Site_ID),]
@@ -73,9 +72,9 @@ getwd()
     lbvi.max = lbvi.max[2:64]
   }
   
-  ## prep the encounter histories ####
+  ## prep the encounter histories ----
   
-  # study design parameters
+  ### study design parameters ----
   {
     all.arus=sort(unique(habitat$Site_ID))
     ssp.length=3 # matches Copper Fire analysis
@@ -112,9 +111,9 @@ getwd()
     }
   }
   
-  ## Fit Models ####
+  ## Fit Models ----
   
-  ### Bewick's Wren ####
+  ### Bewick's Wren ----
   occ_BEWR <- unmarkedFrameOccu(y = dets.bewr, 
                                 siteCovs = habitat, 
                                 obsCovs = list(effort=eff, 
@@ -141,16 +140,16 @@ getwd()
   # write.csv(as(modSel(fitList(psi_null=bewr.1, habitat_type=bewr.1.1, canopy_height=bewr.1.2, low_rip=bewr.1.3,
   #                  null=bewr.0, effort=bewr.1, time=bewr.2, effort_time=bewr.12)), "data.frame"),
   #           file='BEWR_modsel.csv')
-
+  
   summary(bewr.1.1)
-
+  
   plogis(-0.2840 +0.0388*36) # p at max effort = 0.75 - updated 'hab'
   plogis(2.37) # psi in upland = 0.915
   plogis(2.37 - 2.36) # psi in upland = 0.502
   
   
   
-  ### Least Bell's Vireo ####
+  ### Least Bell's Vireo ----
   #dets.lbvi_og=dets.lbvi # '_og' is the unfiltered version
   #occ_LBVI_og=occ_LBVI # '_og' is the unfiltered version
   occ_LBVI <- unmarkedFrameOccu(y = dets.lbvi, 
@@ -182,7 +181,7 @@ getwd()
   #           file="LBVI_modsel.csv")
   
   summary(lbvi.2.3)
-    plogis(-1.4712  + 0.0913*1) # p early-season = 0.20
+  plogis(-1.4712  + 0.0913*1) # p early-season = 0.20
   plogis(-1.4712  + 0.0913*10) # p mid-season = 0.36
   plogis(-1.4712  + 0.0913*21) # p late-season = 0.61
   
@@ -196,20 +195,18 @@ getwd()
   
   plot(habitat$HabType~habitat$Elevation_mean)
   points(habitat$HabType[substr(habitat$Site_ID, 1, 24) %in% lbvi.val$Site_ID[lbvi.val$valid_TP==1] ]
-                       ~habitat$Elevation_mean[substr(habitat$Site_ID, 1, 24) %in% lbvi.val$Site_ID[lbvi.val$valid_TP==1]],
-                                               col='red')
+         ~habitat$Elevation_mean[substr(habitat$Site_ID, 1, 24) %in% lbvi.val$Site_ID[lbvi.val$valid_TP==1]],
+         col='red')
   
   lbvi.val=lbvi.val[lbvi.val$Site_ID %in% substr(habitat$Site_ID, 1, 24),]
   
   summary(habitat$LowRip)
-
-  ####
-
+  
 }
 
-# Kenyan savanna ####
+# Kenyan savanna ----
 {
-  ## Read in .csv files ####
+  ## Read in data ----
   effort_days <- read.csv('Data_Kenya/effort_days.csv')
   rownames(effort_days) <- effort_days$ID
   effort_days <- subset(effort_days, select = -ID)
@@ -223,23 +220,23 @@ getwd()
   g2_habitat <- read.csv('Data_Kenya/RBS_Grid2_covs.csv')
   rownames(g2_habitat) <- g2_habitat$ID
   g2_habitat <- subset(g2_habitat, select = -ID)
-    hist(g2_habitat$CC)
-    hist(g2_habitat$CC)
-    hist(g2_habitat$Sand0)
-    plot(g2_habitat$CC~g2_habitat$Sand0)
-    cor(g2_habitat$CC, g2_habitat$Sand0) # weak negative: -0.15
-    
-    summary(g2_habitat$Sand0)
-    sd(g2_habitat$Sand0)
-    shapiro.test(g2_habitat$Sand0)
-    ks.test(g2_habitat$Sand0, "pnorm")
-    ks.test(g2_habitat$Sand0, "pnorm", 
-            mean=mean(g2_habitat$Sand0),
-            sd=sd(g2_habitat$Sand0))
-    hist(rnorm(53,mean=mean(g2_habitat$Sand0),
-               sd=sd(g2_habitat$Sand0)))
-    
-    
+  hist(g2_habitat$CC)
+  hist(g2_habitat$CC)
+  hist(g2_habitat$Sand0)
+  plot(g2_habitat$CC~g2_habitat$Sand0)
+  cor(g2_habitat$CC, g2_habitat$Sand0) # weak negative: -0.15
+  
+  summary(g2_habitat$Sand0)
+  sd(g2_habitat$Sand0)
+  shapiro.test(g2_habitat$Sand0)
+  ks.test(g2_habitat$Sand0, "pnorm")
+  ks.test(g2_habitat$Sand0, "pnorm", 
+          mean=mean(g2_habitat$Sand0),
+          sd=sd(g2_habitat$Sand0))
+  hist(rnorm(53,mean=mean(g2_habitat$Sand0),
+             sd=sd(g2_habitat$Sand0)))
+  
+  
   eh_ASCI <- read.csv('Data_Kenya/Ashy Cisticola.csv')
   rownames(eh_ASCI) <- eh_ASCI$ID
   eh_ASCI <- subset(eh_ASCI, select = -ID)
@@ -250,9 +247,9 @@ getwd()
   eh_GRWH <- subset(eh_GRWH, select = -ID)
   #head(eh_GRWH)
   
-
-  ## Fit Models ####
-  ### Ashy Cisticola #### 
+  
+  ## Fit Models----
+  ### Ashy Cisticola----
   occ_ASCI <- unmarkedFrameOccu(y = eh_ASCI[,1:10], 
                                 siteCovs = g2_habitat, 
                                 obsCovs = list(hours=effort_hrs, 
@@ -272,7 +269,7 @@ getwd()
   # write.csv(as( modSel(fitList(psi_null=asci.1, canopy=asci.1.1, sand=asci.1.2,
   #                              null=asci.0, hours=asci.1, days=asci.2, hours_days=asci.12)), "data.frame"),
   #           file="ASCI_modsel.csv")
-
+  
   summary(asci.1.2)  
   hist(g2_habitat$Sand0)
   plogis(3.761 - 0.151*30) # psi at 30% sand = 0.31
@@ -282,8 +279,8 @@ getwd()
   plogis(-1.0656 +0.0277*44) # p at mean effort = 0.538
   
   # low-sand specialist
- 
-  ### Green Woodhoopoe #### 
+  
+  ### Green Woodhoopoe----
   occ_GRWH <- unmarkedFrameOccu(y = eh_GRWH[,1:10], 
                                 siteCovs = g2_habitat, 
                                 obsCovs = list(hours=effort_hrs, 
@@ -313,8 +310,8 @@ getwd()
   summary(occ_GRWH@obsCovs$hours)
   plogis(-3.1624 +0.0392*44) # p at mean effort = 0.192
   
-
-  ## Predicting Occupancy ###
+  
+  ## Predicting Occupancy----
   summary(g2_habitat$Sand0)
   sand_obs=data.frame(Sand0=seq(25,60,by=.1))
   asci.pred=predict(asci.1.2, type="state", newdata=sand_obs)
@@ -345,9 +342,9 @@ getwd()
   
 }
 
-# NYS grasslands ####
+# NYS grasslands ----
 {
-  ## read in the data ####
+  ## read in the data----
   {
     habitat <- read.csv('Data_NYS/sites_covariates.csv')
     habitat=habitat[order(habitat$site),]
@@ -365,8 +362,8 @@ getwd()
   
   # check alignment, trim dataframes
   {
-    habitat$site==grsp_binary$site
-    grsp_binary$site==grsp_binary$site
+    habitat$site==bobo_binary$site
+    bobo_binary$site==sosp_binary$site
     # all sites aligned
     
     rownames(habitat) <- habitat$site
@@ -376,7 +373,7 @@ getwd()
     hola_binary = hola_binary[,3:32]
   }
   
-  # study design parameters
+  ### study design parameters----
   {
     all.arus=sort(unique(habitat$site))
     ssp.length=6 
@@ -393,9 +390,21 @@ getwd()
   # build effort covariate and encounter histories
   for(a in 1:length(all.arus)){
     for(s in 1:sample.intervals){
-      eff[a,s]=sum(!is.na(grsp_binary[a, sampling.start[s]:sampling.stop[s]]))
+      eff[a,s]=sum(!is.na(bobo_binary[a, sampling.start[s]:sampling.stop[s]]))
       survey.time[a,s]=s
       if(eff[a,s]>0){
+        # BOBO
+        if( max(bobo_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1){
+          dets.bobo[a,s]=1
+        } else {
+          dets.bobo[a,s]=0
+        }
+        # SOSP
+        if( max(sosp_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1) {
+          dets.sosp[a,s]=1
+        } else {
+          dets.sosp[a,s]=0
+        }
         # GRSP
         if( max(grsp_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1) {
           dets.grsp[a,s]=1
@@ -408,14 +417,20 @@ getwd()
         } else {
           dets.hola[a,s]=0
         }
-
+        # RWBL
+        if( max(rwbl_binary[a, sampling.start[s]:sampling.stop[s]], na.rm=T) == 1) {
+          dets.rwbl[a,s]=1
+        } else {
+          dets.rwbl[a,s]=0
+        }
+        
       }
     }
   }
   
-  ## Fit Models ####
+  ## Fit Models----
   
-  ### Grasshopper Sparrow ####
+  ### Grasshopper Sparrow----
   occ_GRSP <- unmarkedFrameOccu(y = dets.grsp, 
                                 siteCovs = habitat, 
                                 obsCovs = list(effort=eff, 
@@ -448,7 +463,7 @@ getwd()
   
   plogis(-1.65) # psi = 0.161
   
-  ### Horned Lark ####
+  ### Horned Lark----
   occ_HOLA <- unmarkedFrameOccu(y = dets.hola, 
                                 siteCovs = habitat, 
                                 obsCovs = list(effort=eff, 
@@ -481,7 +496,7 @@ getwd()
   plogis(1.41 ) # psi in grassland = 0.804
   plogis(1.41 - 3.25 ) # psi in solar = 0.137
   summary(habitat$type)
-
+  
 }
 
 
