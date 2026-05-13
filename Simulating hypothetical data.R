@@ -1,4 +1,4 @@
-# General-purpose power analysis for various hypothetical species proviles
+# Simulating hypothetical data for multiple hypothetical species profiles
 # Connor Wood - cmw289@cornell.edu
 ## First coded August 2025; last updated 13-May 2026
 
