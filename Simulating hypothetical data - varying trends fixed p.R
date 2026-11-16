@@ -1,6 +1,6 @@
 # Simulating hypothetical data for multiple hypothetical species profiles
 # Connor Wood - cmw289@cornell.edu
-## First coded August 2025; last updated 13-May 2026
+## First coded August 2025; last updated 16-NOvember 2026
 
 library(unmarked)
 # function to calculate if true occupancy in each year was within 85% CI for predicted occupancy
@@ -11,7 +11,7 @@ good_pred <- function(y){ifelse(true_occ[y] >= bootres$pred_mean[y] - mar85[y] &
 
 # Set parameters for simulation ----
 {
-  n.its = 50              # Number of iterations; total should be >=100. Testing with <5 is nice
+  n.its = 200              # Number of iterations; total should be >=100. Testing with <5 is nice
   yrs = 10                # Number of survey years
   territories = 400       # Number of potential bird territories in the study area
   
@@ -30,7 +30,7 @@ good_pred <- function(y){ifelse(true_occ[y] >= bootres$pred_mean[y] - mar85[y] &
   phi.var = 0.03           # annual +/- variation in phi
   
   scenarios=length(sites)*length(det)*length(visits)*length(occ)*length(lambda)
-  numboots = 10           # for derived estimates of occupancy; should use 50-100 when running this for real
+  numboots = 75           # for derived estimates of occupancy; should use 50-100 when running this for real
   
   #create empty list to store results of each run
   output.list <- vector(mode="list",
